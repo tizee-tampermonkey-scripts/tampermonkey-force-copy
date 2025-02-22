@@ -1,12 +1,15 @@
 // ==UserScript==
 // @name         force-copy
-// @namespace    http://tampermonkey.net/
-// @version      2024-05-06
+// @namespace    https://github.com/tizee-tampermonkey-scripts/tampermonkey-force-copy
+// @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/main/force-copy.js
+// @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/main/force-copy.js
+// @version      1.1
 // @description  force web to enable copy, context menu
 // @author       tizee
 // @icon         https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/1f4dd.png
 // @grant        GM_addStyle
 // @match        *://*/*
+// @license      MIT
 // ==/UserScript==
 
 (function() {
