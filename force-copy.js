@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         force-copy
 // @namespace    https://github.com/tizee-tampermonkey-scripts/tampermonkey-force-copy
-// @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/main/force-copy.js
-// @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/main/force-copy.js
+// @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
+// @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
 // @version      1.1
 // @description  force web to enable copy, context menu
 // @author       tizee
