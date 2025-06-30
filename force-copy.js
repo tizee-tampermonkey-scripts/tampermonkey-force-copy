@@ -3,8 +3,8 @@
 // @namespace    https://github.com/tizee-tampermonkey-scripts/tampermonkey-force-copy
 // @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
 // @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
-// @version      1.3
-// @description  force web to enable copy, context menu
+// @version      1.4
+// @description  force web to enable copy, context menu with per-domain settings
 // @author       tizee
 // @icon         https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/1f4dd.png
 // @grant        GM_addStyle
@@ -14,15 +14,43 @@
 
 (function() {
     'use strict';
-    let isForceCopyEnabled = true;
+    
+    // Get current domain
+    const currentDomain = window.location.hostname;
+    
+    // Domain-specific settings storage
+    function getDomainSettings() {
+        const settings = localStorage.getItem('forceCopyDomainSettings');
+        return settings ? JSON.parse(settings) : {};
+    }
+    
+    function saveDomainSettings(settings) {
+        localStorage.setItem('forceCopyDomainSettings', JSON.stringify(settings));
+    }
+    
+    function getDomainEnabled(domain) {
+        const settings = getDomainSettings();
+        return settings[domain] || false; // Default to disabled
+    }
+    
+    function setDomainEnabled(domain, enabled) {
+        const settings = getDomainSettings();
+        settings[domain] = enabled;
+        saveDomainSettings(settings);
+    }
+    
+    // Initialize with domain-specific setting (default: disabled)
+    let isForceCopyEnabled = getDomainEnabled(currentDomain);
 
     // Create status banner
     const banner = document.createElement('div');
     banner.id = 'force-copy-banner';
+    const initialText = isForceCopyEnabled ? 'Force Copy enabled - Click to disable' : 'Force Copy disabled - Click to enable';
     banner.innerHTML = `
-        <div class="banner-content">Force Copy enabled - Click to disable</div>
+        <div class="banner-content">${initialText}</div>
         <div class="banner-toggle"></div>
         <div class="dropdown-triangle"></div>
+        <div class="domain-info">${currentDomain}</div>
     `;
     banner.style.position = 'fixed';
     banner.style.top = '0';
@@ -40,7 +68,12 @@
     if (savedPinnedState === 'false') {
       banner.classList.remove('pinned');
     }
-    banner.classList.add('force-copy-enabled');
+    // Set initial state based on domain setting
+    if (isForceCopyEnabled) {
+        banner.classList.add('force-copy-enabled');
+    } else {
+        banner.classList.add('force-copy-disabled');
+    }
     GM_addStyle(`
       #force-copy-banner {
         display: flex;
@@ -134,6 +167,18 @@
       #force-copy-banner:hover:not(.pinned) .dropdown-triangle {
         display: none;
       }
+      .domain-info {
+        font-size: 10px;
+        opacity: 0.8;
+        margin-left: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+      }
+      #force-copy-banner:not(.pinned) .domain-info {
+        display: none;
+      }
     `);
     document.body.prepend(banner);
 
@@ -152,6 +197,9 @@
       }
 
       isForceCopyEnabled = !isForceCopyEnabled;
+      // Save domain-specific setting
+      setDomainEnabled(currentDomain, isForceCopyEnabled);
+      
       if (isForceCopyEnabled) {
         banner.classList.remove('force-copy-disabled');
         banner.classList.add('force-copy-enabled');
