@@ -3,7 +3,7 @@
 // @namespace    https://github.com/tizee-tampermonkey-scripts/tampermonkey-force-copy
 // @downloadURL  https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
 // @updateURL    https://raw.githubusercontent.com/tizee-tampermonkey-scripts/tampermonkey-force-copy/refs/heads/main/force-copy.js
-// @version      1.4
+// @version      1.4.1
 // @description  force web to enable copy, context menu with per-domain settings
 // @author       tizee
 // @icon         https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/72x72/1f4dd.png
@@ -14,31 +14,31 @@
 
 (function() {
     'use strict';
-    
+
     // Get current domain
     const currentDomain = window.location.hostname;
-    
+
     // Domain-specific settings storage
     function getDomainSettings() {
         const settings = localStorage.getItem('forceCopyDomainSettings');
         return settings ? JSON.parse(settings) : {};
     }
-    
+
     function saveDomainSettings(settings) {
         localStorage.setItem('forceCopyDomainSettings', JSON.stringify(settings));
     }
-    
+
     function getDomainEnabled(domain) {
         const settings = getDomainSettings();
         return settings[domain] || false; // Default to disabled
     }
-    
+
     function setDomainEnabled(domain, enabled) {
         const settings = getDomainSettings();
         settings[domain] = enabled;
         saveDomainSettings(settings);
     }
-    
+
     // Initialize with domain-specific setting (default: disabled)
     let isForceCopyEnabled = getDomainEnabled(currentDomain);
 
@@ -61,8 +61,6 @@
     banner.style.zIndex = '999999';
     banner.style.transition = 'all 0.3s ease';
     banner.dataset.state = 'enabled';
-    // Default to pinned state
-    banner.classList.add('pinned');
     // Load saved state from localStorage
     const savedPinnedState = localStorage.getItem('forceCopyBannerPinned');
     if (savedPinnedState === 'false') {
@@ -199,7 +197,7 @@
       isForceCopyEnabled = !isForceCopyEnabled;
       // Save domain-specific setting
       setDomainEnabled(currentDomain, isForceCopyEnabled);
-      
+
       if (isForceCopyEnabled) {
         banner.classList.remove('force-copy-disabled');
         banner.classList.add('force-copy-enabled');
